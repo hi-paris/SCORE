@@ -1,0 +1,6 @@
+matplotlib==3.8.3
+numpy==1.26.4
+pandas==2.2.2
+scikit_learn==1.4.1.post1
+scikit_optimize==0.10.1
+scipy==1.13.0
