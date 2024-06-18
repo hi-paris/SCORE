@@ -11,7 +11,7 @@ If you follow `example.py` (and take a closer look at `SCORE.py`) you'll notice 
 
 Next, the acquisition function (`af`) is computed to assign a "score" to every possible parameter value. These individual parameter scores are then aggregated to identify the most promising parameter combination for objective function testing. Instead of suggesting just one point (i.e. the parameter combination with the best score), multiple combinations can alternatively be selected at every iteration (via `n_cbs`). Therefore, for the same total number of function evaluations, the number of times the surrogate model is called is greatly reduced while potentially accelerating convergence toward the global optimum.
 
-So far, only minimization problems with discrete variables are considered. While we have been successfully using $SCORE$ to tackle 5 to 14D solar energy (minimization and maximization) problems , we still need to rigorously assess its robustness and compare it with state-of-the-art techniques on benchmark optimization problems. Don't hesitate to reach out if you have any suggestions or would like to help out!
+So far, only minimization problems with discrete variables are considered. While we have been successfully using $SCORE$ to tackle 5 to 14D solar energy (minimization and maximization) problems, we still need to rigorously assess its robustness and compare it with state-of-the-art techniques on benchmark optimization problems. Don't hesitate to reach out if you have any suggestions or would like to help out!
 
 **Contact Information**
 
