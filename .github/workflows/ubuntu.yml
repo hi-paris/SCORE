@@ -15,23 +15,22 @@ jobs:
           - version: "3.9"
             toxenv: "py39"
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v4.0.0
-        with:
-          python-version: ${{ matrix.python.version }}
-
-      # - name: Install tox
-      #   run: python -m pip install tox
-
-      # - name: Run pytest
-      #   run: tox -e ${{ matrix.python.toxenv }}
-      - name: Install pytest
-        run: python -m pip install pytest pytest-cov numpy scipy .
-
-      - name: Run pytest
-        run: pytest
-        working-directory: . # You don't need this in your package
+    - uses: actions/checkout@v4
+    - name: setup python "3.10"
+      uses: actions/setup-python@v4.0.0
+      with:
+        python-version: ${{ matrix.python.version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install flake8
+        python -m pip install -r requirements.txt
+    - name: Lint with flake8
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
   test_macos:
     name: Test_MacOS
