@@ -104,11 +104,13 @@ class SCORE:
                 bo_param['AF'] = acq_fun(self.af, mean, std, fX_best, self.beta, self.xi)
 
                 bo_param = bo_param.sort_values('AF', ascending=True)
+                bo_param.rename(columns={'AF': param['name']+'_score'}, inplace=True)
+                bo_param = bo_param.loc[bo_param.index.values, param['name'] + '_score'].reset_index()
 
-                top_param_vals[param['name']] = bo_param.index
-                top_param_vals[param['name']+'_score'] = bo_param['AF'].values
+                top_param_vals = pd.concat([top_param_vals, bo_param], axis=1)
 
             # Get most likely combinations using most likely values for each param
+            top_param_vals = top_param_vals.dropna()
             top_param_vals['Score'] = top_param_vals[score_cols].apply(np.sum, axis=1)
 
             # Remove duplicated predictions
