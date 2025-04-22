@@ -109,14 +109,15 @@ class SCORE:
             top_param_vals['Score'] = top_param_vals[score_cols].apply(np.sum, axis=1)
 
             # Remove duplicated predictions
-            combs_extra = pd.concat([top_param_vals[param_names+['Score']], bo[param_names]]).reset_index(drop=True)
-            combs_extra = combs_extra.drop_duplicates(param_names, keep=False)
-            combs_extra = combs_extra.sort_values('Score', ascending=True).reset_index(drop=True)
+            bo_combs = set(map(tuple, bo[param_names].values))
+            mask = ~top_param_vals[param_names].apply(tuple, axis=1).isin(bo_combs)
+            combs_extra = top_param_vals[mask].reset_index(drop=True)
+            combs_extra = combs_extra.drop(score_cols, axis=1).sort_values('Score', ascending=True, ignore_index=True)
 
             # Compute f(x) of n_cbs new combinations
-            bo = pd.concat([bo, combs_extra.loc[:n_cbs - 1]]).reset_index(drop=True)
-            n_new = bo['obj_func'].dropna().index[-1] + 1
-            bo.loc[n_new:, 'obj_func'] = bo.loc[n_new:, param_names].apply(self.f, axis=1)
+            combs_extra = combs_extra.loc[:n_cbs - 1]
+            combs_extra['obj_func'] = combs_extra[param_names].apply(self.f, axis=1)
+            bo = pd.concat([bo, combs_extra], ignore_index=True)
 
             min_target.append(bo['obj_func'].min())
             if verbose: # Print top 5 parameter combinations after each iteration
