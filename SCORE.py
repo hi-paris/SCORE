@@ -141,17 +141,6 @@ class SCORE:
         ax.set_ylabel('Minimum Value Found')
         ax.set_xlabel('Number of Function Evaluations')
         ax.set_xlim(left=0)
-        ax.set_ylim(bottom=0)
 
     def return_min(self)->float:
         return self.bo[self.bo['obj_func']==min(self.min_target)].iloc[0]
-
-
-
-
-
-
-
-
-
-
