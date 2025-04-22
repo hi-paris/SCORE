@@ -85,11 +85,8 @@ class SCORE:
         for bo_it in range(1, nb_it + 1):
             top_param_vals = pd.DataFrame()
             for p, param in enumerate(self.parameters):
-                param_range = param['domain']
-                bo_param = bo.groupby(param['name']).min('obj_func')
-                ind = list(bo_param.index)
-                ind.extend(param_range)
-                bo_param = bo_param.reindex(sorted(set(ind)))
+                bo_param = bo.groupby(param['name']).min('obj_func')[['obj_func']]
+                bo_param = bo_param.reindex(sorted(set(bo_param.index).union(param['domain'])))
 
                 if param['scale'] == 'log':
                     self.gp.fit(np.array(np.log10(bo_param['obj_func'].dropna().index)).reshape(-1, 1), (bo_param['obj_func'].dropna()).values)
