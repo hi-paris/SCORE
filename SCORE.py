@@ -90,19 +90,17 @@ class SCORE:
 
                 if param['scale'] == 'log':
                     self.gp.fit(np.array(np.log10(bo_param['obj_func'].dropna().index)).reshape(-1, 1), (bo_param['obj_func'].dropna()).values)
-                    bo_param[['Mean', 'STD']] = pd.DataFrame(self.gp.predict(np.array(np.log10(bo_param.index)).reshape(-1, 1), return_std=True)).T.values
+                    mean, std = self.gp.predict(np.array(np.log10(bo_param.index)).reshape(-1, 1), return_std=True)
                 else:
                     self.gp.fit(np.array(bo_param['obj_func'].dropna().index).reshape(-1, 1), (bo_param['obj_func'].dropna()).values)
-                    bo_param[['Mean', 'STD']] = pd.DataFrame(self.gp.predict(np.array(bo_param.index).reshape(-1, 1), return_std=True)).T.values
+                    mean, std = self.gp.predict(np.array(bo_param.index).reshape(-1, 1), return_std=True)
 
                 fX_best = bo_param['obj_func'].min()
-                mean, std = bo_param['Mean'], bo_param['STD']
 
-                bo_param['AF'] = acq_fun(self.af, mean, std, fX_best, self.beta, self.xi)
+                bo_param[param['name']+'_score'] = acq_fun(self.af, mean, std, fX_best, self.beta, self.xi)
 
-                bo_param = bo_param.sort_values('AF', ascending=True)
-                bo_param.rename(columns={'AF': param['name']+'_score'}, inplace=True)
-                bo_param = bo_param.loc[bo_param.index.values, param['name'] + '_score'].reset_index()
+                bo_param = bo_param.sort_values(param['name']+'_score', ascending=True)
+                bo_param = bo_param[param['name'] + '_score'].reset_index()
 
                 top_param_vals = pd.concat([top_param_vals, bo_param], axis=1)
 
